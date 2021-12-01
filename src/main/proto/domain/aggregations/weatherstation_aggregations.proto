@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package be.reaktika.weatherstation.domain.aggregations;
+
+import "google/protobuf/timestamp.proto";
+import "action/weatherstation_publish.proto";
+import "akkaserverless/annotations.proto";
+
+option java_outer_classname = "WeatherStationAggregation";
+
+//state
+enum AggregationType {
+  EXTREMES = 0;
+  COUNTRY = 1;
+}
+
+message TemperatureMeasurement {
+  string station_id = 1;
+  double measuredTemperature = 2;
+  google.protobuf.Timestamp measurementTime = 3;
+}
+
+
+message WindspeedMeasurement {
+  string station_id = 1;
+  double measuredWindspeed = 2;
+  google.protobuf.Timestamp measurementTime = 3;
+}
+
+//commands
+message AddToAggregationCommand {
+  AggregationType type = 1  [(akkaserverless.field).entity_key = true];
+  be.reaktika.weatherstation.action.WeatherStationData weatherdata = 2;
+}

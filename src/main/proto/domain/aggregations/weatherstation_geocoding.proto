@@ -1,0 +1,36 @@
+syntax = "proto3";
+package be.reaktika.weatherstation.domain.geocoding;
+
+option java_outer_classname = "GeoCodingModel";
+
+import "domain/aggregations/weatherstation_aggregations.proto";
+import "google/protobuf/empty.proto";
+import "akkaserverless/annotations.proto";
+
+option (akkaserverless.file).value_entity = {
+  name: "GeoCoding"
+  entity_type: "geocodingentity"
+  state: "GeoCodingState"
+};
+
+message GeoCodingState {
+  map<string,string> stationIdToCountry = 1;
+}
+
+//events
+message CountryMeasurements {
+  string country = 1;
+  repeated be.reaktika.weatherstation.domain.aggregations.TemperatureMeasurement temperatures = 3;
+  repeated be.reaktika.weatherstation.domain.aggregations.WindspeedMeasurement windspeeds = 4;
+}
+
+
+
+service GeoCodingEntityService {
+  option (akkaserverless.service) = {
+    type : SERVICE_TYPE_ENTITY
+    component : "be.reaktika.weatherstation.domain.geocoding.GeoCoding"
+  };
+  rpc RegisterData(be.reaktika.weatherstation.domain.aggregations.AddToAggregationCommand) returns (google.protobuf.Empty);
+
+}

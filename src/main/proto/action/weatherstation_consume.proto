@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package be.reaktika.weatherstation.action;
+
+option java_outer_classname = "WeatherStationDataConsume";
+
+import "action/weatherstation_publish.proto";
+import "google/protobuf/empty.proto";
+import "akkaserverless/annotations.proto";
+
+
+service WeatherStationDataConsumeService {
+    option (akkaserverless.service) = {
+        type : SERVICE_TYPE_ACTION
+    };
+    rpc DispatchWeatherStationData(be.reaktika.weatherstation.action.WeatherStationData) returns (google.protobuf.Empty){
+        option (akkaserverless.method).eventing.in = {
+            topic: "weatherstation_data"
+        };
+    }
+
+}
+
+

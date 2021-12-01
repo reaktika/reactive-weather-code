@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package be.reaktika.weatherstation.action.geocoding;
+
+option java_outer_classname = "GeoCodingDataPublish";
+
+import "domain/aggregations/weatherstation_geocoding.proto";
+import "google/protobuf/timestamp.proto";
+import "akkaserverless/annotations.proto";
+
+message CountryData {
+  string country = 1;
+  repeated TemperatureData temperatures = 2;
+  repeated WindspeedData windspeeds = 3;
+}
+
+message TemperatureData {
+  double measuredTemperature = 2;
+  google.protobuf.Timestamp measurementTime = 3;
+}
+message WindspeedData {
+  string station_id = 1;
+  double measuredWindspeed = 2;
+  google.protobuf.Timestamp measurementTime = 3;
+}
+
+
+service GeoCodingPublishService {
+  option (akkaserverless.service) = {
+    type : SERVICE_TYPE_ACTION
+  };
+  rpc PublishMeasurements(be.reaktika.weatherstation.domain.geocoding.CountryMeasurements) returns (be.reaktika.weatherstation.action.geocoding.CountryData) {
+    option (akkaserverless.method).eventing = {
+      out: {
+        topic: "measurements_per_country"
+      }
+    };
+  };
+}

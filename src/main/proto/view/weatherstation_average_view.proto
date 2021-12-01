@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+option java_outer_classname = "WeatherStationAverageViewModel";
+
+package be.reaktika.weatherstation.view;
+import "akkaserverless/annotations.proto";
+import "google/api/annotations.proto";
+import "domain/weatherstation_domain.proto";
+
+message StationByIdRequest {
+  string station_id = 1;
+}
+
+message WeatherStationOverallAverageState {
+  string station_id = 1;
+  double latitude = 2;
+  double longitude = 3;
+  string station_name = 4;
+  double average_temp_celcius_overall = 5;
+  double average_windspeed_overall = 6;
+  int64 numberOfWindMeasurements = 7;
+  int64 numberOfTemperatureMeasurements = 8;
+}
+
+
+service WeatherStationOverallAverage {
+  option (akkaserverless.service) = {
+    type: SERVICE_TYPE_VIEW
+  };
+  rpc ProcessStationRegistered(be.reaktika.weatherstation.domain.StationRegistered) returns (WeatherStationOverallAverageState) {
+    option (akkaserverless.method).eventing.in = {
+      event_sourced_entity: "weatherstation"
+    };
+    option(akkaserverless.method).view.update = {
+      table: "weatherstationsOveralAverage"
+      transform_updates: true
+    };
+  }
+
+  rpc ProcessTemperatureAdded(be.reaktika.weatherstation.domain.TemperaturesCelciusAdded) returns (WeatherStationOverallAverageState) {
+    option (akkaserverless.method).eventing.in = {
+      event_sourced_entity: "weatherstation"
+    };
+    option(akkaserverless.method).view.update = {
+      table: "weatherstationsOveralAverage"
+      transform_updates: true
+    };
+  }
+
+  rpc ProcessWindspeedAdded(be.reaktika.weatherstation.domain.WindspeedsAdded) returns (WeatherStationOverallAverageState) {
+    option (akkaserverless.method).eventing.in = {
+      event_sourced_entity: "weatherstation"
+    };
+    option(akkaserverless.method).view.update = {
+      table: "weatherstationsOveralAverage"
+      transform_updates: true
+    };
+  }
+
+  rpc GetStationState(StationByIdRequest) returns (WeatherStationOverallAverageState) {
+    option (akkaserverless.method).view.query = {
+      query: "SELECT average_temp_celcius_overall, average_windspeed_overall, numberOfWindMeasurements, numberOfTemperatureMeasurements, station_id, latitude, longitude, station_name FROM weatherstationsOveralAverage WHERE station_id = :station_id"
+    };
+    option (google.api.http) = {
+      get: "/weather/station/{station_id}"
+    };
+  }
+}

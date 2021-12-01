@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package be.reaktika.weatherstation.view;
+
+option java_outer_classname = "CountryAverageViewModel";
+
+import "akkaserverless/annotations.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "domain/weatherstation_domain.proto";
+import "domain/aggregations/weatherstation_geocoding.proto";
+import "action/weatherstation_geocoding_publishing.proto";
+
+message AveragePerCountryState {
+  repeated CountryAverageRecord averagesPerCounty = 1;
+}
+
+message CountryAverageRecord {
+  string country = 1;
+  double average_temp_celcius = 2;
+  double average_windspeed = 3;
+  int64 numberOfWindMeasurements = 4;
+  int64 numberOfTemperatureMeasurements = 5;
+}
+
+
+service CountryAverage {
+  option (akkaserverless.service) = {
+    type: SERVICE_TYPE_VIEW
+  };
+  rpc ProcessCountryMeasurement(be.reaktika.weatherstation.action.geocoding.CountryData) returns (AveragePerCountryState) {
+    option (akkaserverless.method).eventing.in = {
+      topic: "measurements_per_country"
+    };
+    option(akkaserverless.method).view.update = {
+      table: "averagePerCountry"
+      transform_updates: true
+    };
+  }
+
+
+  rpc GetCountryAverage(google.protobuf.Empty) returns (AveragePerCountryState) {
+    option (akkaserverless.method).view.query = {
+      query: "SELECT * from averagePerCountry"
+    };
+    option (google.api.http) = {
+      get: "/weather/percountry"
+    };
+  }
+}

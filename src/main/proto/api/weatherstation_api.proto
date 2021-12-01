@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package be.reaktika.weatherstation.api;
+
+option java_outer_classname = "WeatherStationService";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "akkaserverless/annotations.proto";
+import "google/api/annotations.proto";
+
+
+message StationRegistrationRequest {
+    string station_id = 1;
+    string station_name = 2;
+    double latitude = 3;
+    double longitude = 4;
+}
+
+message StationTemperaturePublishRequest {
+    string station_id = 1;
+    repeated TemperatureMeasurements temp_measurements = 2;
+}
+
+message TemperatureMeasurements {
+    google.protobuf.Timestamp measurement_time = 1;
+    float temperature_celcius = 2;
+}
+
+message StationWindspeedPublishRequest {
+    string station_id = 1;
+    repeated WindspeedMeasurement windspeed_measurements = 2;
+}
+
+message WindspeedMeasurement {
+    google.protobuf.Timestamp measurement_time = 1;
+    float windspeed_m_per_s = 2;
+}
+
+
+
+service WeatherStationApi {
+    option (akkaserverless.service) = {
+        type : SERVICE_TYPE_ACTION
+    };
+    rpc RegisterStation(StationRegistrationRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            post: "/weather/station/register"
+            body: "*"
+        };
+    }
+    rpc PublishTemperatureReport(StationTemperaturePublishRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            post: "/weather/station/publish/temperature"
+            body: "*"
+        };
+    }
+
+    rpc PublishWindspeedReport(StationWindspeedPublishRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            post: "/weather/station/publish/windspeed"
+            body: "*"
+        };
+    }
+}

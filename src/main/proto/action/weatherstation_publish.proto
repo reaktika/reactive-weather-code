@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package be.reaktika.weatherstation.action;
+
+option java_outer_classname = "WeatherStationToTopic";
+
+import "domain/weatherstation_domain.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "akkaserverless/annotations.proto";
+
+
+
+message WeatherStationData {
+    string station_id = 1;
+    string station_name = 2;
+    double latitude = 3;
+    double longitude = 4;
+    repeated WeatherStationTemperatures temperatures = 5;
+    repeated WeatherStationWindspeeds windspeeds = 6;
+}
+
+message WeatherStationTemperatures {
+    google.protobuf.Timestamp measurement_time = 1;
+    float temperature_celcius = 2;
+}
+
+message WeatherStationWindspeeds {
+    google.protobuf.Timestamp measurement_time = 1;
+    float windspeed_m_per_s = 2;
+}
+
+service WeatherStationToTopicService {
+    option (akkaserverless.service) = {
+        type : SERVICE_TYPE_ACTION
+    };
+    rpc PublishStationRegistered(be.reaktika.weatherstation.domain.StationRegistered) returns (WeatherStationData){
+        option (akkaserverless.method).eventing.in = {
+            event_sourced_entity: "weatherstation"
+        };
+        option (akkaserverless.method).eventing.out= {
+            topic: "weatherstation_data"
+        };
+    };
+
+    rpc PublishTemperatureRegistered(be.reaktika.weatherstation.domain.TemperaturesCelciusAdded) returns (WeatherStationData) {
+        option (akkaserverless.method).eventing.in = {
+            event_sourced_entity: "weatherstation"
+        };
+        option (akkaserverless.method).eventing.out= {
+            topic: "weatherstation_data"
+        };
+    }
+    rpc PublishWindspeedRegistered(be.reaktika.weatherstation.domain.WindspeedsAdded) returns (WeatherStationData){
+        option (akkaserverless.method).eventing.in = {
+            event_sourced_entity: "weatherstation"
+        };
+        option (akkaserverless.method).eventing.out= {
+            topic: "weatherstation_data"
+        };
+    }
+}
+
+
