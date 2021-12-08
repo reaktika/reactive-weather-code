@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>be.reaktika</groupId>
-  <artifactId>reactive-weather</artifactId>
+  <artifactId>reactive-weather-part1</artifactId>
   <version>1.12.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
@@ -11,7 +11,7 @@
     <properties>
 
       <!-- TODO Update to your own Docker repository or Docker Hub scope -->
-      <dockerImage>thomashoutekier83/${project.artifactId}</dockerImage>
+      <dockerImage>docker-repo/${project.artifactId}</dockerImage>
       <dockerTag>${project.version}</dockerTag>
       <mainClass>be.reaktika.weatherstation.Main</mainClass>
 
@@ -142,11 +142,6 @@
                   <arg>/maven/${project.build.finalName}.jar</arg>
                 </entryPoint>
               </build>
-              <run>
-                <env>
-                  <OPENCAGE_API_KEY></OPENCAGE_API_KEY>
-                </env>
-              </run>
             </image>
           </images>
         </configuration>
@@ -318,6 +313,11 @@
       <version>${akkaserverless-sdk.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.7</version>
+    </dependency>
+    <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>1.2.3</version>
@@ -337,27 +337,6 @@
     <dependency>
       <groupId>com.typesafe.akka</groupId>
       <artifactId>akka-stream_${scala.binary.version}</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.byteowls</groupId>
-      <artifactId>jopencage</artifactId>
-      <version>1.4.0</version>
-    </dependency>
-    <!--opencage dependencies-->
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-      <version>${jackson-version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>${jackson-version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
-      <version>${jackson-version}</version>
     </dependency>
     <dependency>
       <groupId>com.akkaserverless</groupId>
