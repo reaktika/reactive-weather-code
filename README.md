@@ -1,16 +1,6 @@
 # reactive-weather
 
-
-## Designing
-
-While designing your service it is useful to read [designing services](https://developer.lightbend.com/docs/akka-serverless/designing/index.html)
-
-
-## Developing
-
-This project has a bare-bones skeleton service ready to go, but in order to adapt and
-extend it it may be useful to read up on [developing services](https://developer.lightbend.com/docs/akka-serverless/developing/index.html)
-and in particular the [Java section](https://developer.lightbend.com/docs/akka-serverless/java-services/index.html)
+Source code of the blog on [reaktika.be/blog](https://www.reaktika.be/blog/) about Akka Serverless (part 1)
 
 
 ## Building
@@ -48,26 +38,7 @@ To start the application locally, the `exec-maven-plugin` is used. Use the follo
 mvn compile exec:java
 ```
 
-With both the proxy and your application running, any defined endpoints should be available at `http://localhost:9000`. In addition to the defined gRPC interface, each method has a corresponding HTTP endpoint. Unless configured otherwise (see [Transcoding HTTP](https://docs.lbcs.dev/js-services/proto.html#_transcoding_http)), this endpoint accepts POST requests at the path `/[package].[entity name]/[method]`. For example, using `curl`:
-
-```
-> curl -XPOST -H "Content-Type: application/json" localhost:9000/be.reaktika.CounterService/GetCurrentCounter -d '{"counterId": "foo"}'
-The command handler for `GetCurrentCounter` is not implemented, yet
-```
-
-For example, given [`grpcurl`](https://github.com/fullstorydev/grpcurl):
-
-```shell
-> grpcurl -plaintext -d '{"counterId": "foo"}' localhost:9000 be.reaktika.CounterService/GetCurrentCounter 
-ERROR:
-  Code: Unknown
-  Message: The command handler for `GetCurrentCounter` is not implemented, yet
-```
-
-> Note: The failure is to be expected if you have not yet provided an implementation of `GetCurrentCounter` in
-> your entity.
-
-
+With both the proxy and your application running, any defined endpoints should be available at `http://localhost:9000`. In addition to the defined gRPC interface, each method has a corresponding HTTP endpoint. Unless configured otherwise (see [Transcoding HTTP](https://docs.lbcs.dev/js-services/proto.html#_transcoding_http)), this endpoint accepts POST requests at the path `/[package].[entity name]/[method]`. 
 ## Deploying
 
 To deploy your service, install the `akkasls` CLI as documented in
