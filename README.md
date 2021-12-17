@@ -1,6 +1,6 @@
 # reactive-weather
 
-Source code of the blog on [reaktika.be/blog](https://www.reaktika.be/blog/) about Akka Serverless (part 1)
+Source code of the blog on [reaktika.be/blog](https://www.reaktika.be/stateful-serverless-with-akkaserverless-part-1/) about Akka Serverless (part 1)
 
 
 ## Building
